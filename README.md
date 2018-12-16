@@ -1,6 +1,6 @@
 # pysel
 
-Dependencies:
+Dependencies
     python3
     pip3 install selenium
     pip3 install pandas
@@ -11,5 +11,4 @@ Dependencies:
         sudo mv geckodriver /usr/bin
     # get geckodriver for windows
         google > download > add to path
-
     Firefox

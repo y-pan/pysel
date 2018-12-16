@@ -1,0 +1,4 @@
+/protected
+
+__pycache__/
+*.py[cod]

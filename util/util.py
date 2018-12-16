@@ -101,7 +101,7 @@ def loggerSummary(logfile, totalCount, okCount, match_indices, skipCount, failCo
     failed_indices_str = str(failed_indices).replace(',', ';')
     match_indices_str = str(match_indices).replace(',', ';')
     with open(logfile, mode='a') as log:
-        log.write(f'{var.SUMMARY_MARK}\nTotalCount: {totalCount}\nOKCount: {okCount}\nSkipCount: {skipCount}\nFailCount: {failCount}\nGet_only_indices_list: {match_indices_str}\nFailedIndices_list: {failed_indices_str}')
+        log.write(f'{var.SUMMARY_MARK}\nTotalCount: {totalCount}\nOKCount: {okCount}\nSkipCount: {skipCount}\nFailCount: {failCount}\nMatch_indices(only matched get downloaded): {match_indices_str}\nFailedIndices: {failed_indices_str}')
     return False
 
 @dec.SuppressExceptionTrue

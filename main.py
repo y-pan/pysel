@@ -18,23 +18,33 @@ def main():
     pageUrl = argDic.get(var.FLAG_URL, util.default_pageurl())
     password = argDic.get(var.FLAG_PASS, util.default_password())
     username = argDic.get(var.FLAG_USER, util.default_username())
+    start_index = int(argDic.get(var.FLAG_START_INDEX, 0))
 
     print(f'user: {username}, pass: {password}')
     print(f"REDO: {redoLog}")
     print(f"pageUrl: {pageUrl}")
-    
+    print(f"start_index: {start_index}")
+
     logfile = f"log_{util.timestamp()}.csv"
     redoNames = util.getDownloadFailed(logfile=redoLog, target_column=var.HEADER_FULLNAME)
 
     cycle(
         logfile=logfile,
+        start_index=start_index,
         match_fullnames=redoNames,
         pageUrl=pageUrl,
         username=username,
         password=password,
         retry_on_errors_when_finished=var.RETRY_ON_ERRORS_AFTER_DOWNLOAD_FINISHED)
 
-def cycle(logfile, pageUrl, username, password, match_fullnames, retry_on_errors_when_finished):
+def cycle(
+    logfile, 
+    pageUrl, 
+    username, 
+    password, 
+    start_index,
+    match_fullnames, 
+    retry_on_errors_when_finished):
     print(f"[C] VERSION-{var.VERSION} \nSTART... \n{pageUrl}")
     # init driver
     firefox_profile = webdriver.FirefoxProfile()
@@ -52,7 +62,7 @@ def cycle(logfile, pageUrl, username, password, match_fullnames, retry_on_errors
         logfile=logfile,
         xpath=var.XPATH_DOWNLOAD, 
         desiredNumOfDigits=var.INDEX_DIGITS,
-        start_index=None, 
+        start_index=start_index, 
         end_index=None,
         match_fullnames=None,
         exclude_fullnames=None,
@@ -154,7 +164,7 @@ def downloadAll(
                 videoSrc = sel.getVideoSrc(driver=driver)
                 if not videoSrc or videoSrc == "" or videoSrc in srcSet:
                     if srcAttempts > var.GET_SRC_TRY_MAX:
-                        raise Exception(f"[D] Bad src: {videoSrc}; tried {srcAttempts}")
+                        raise ValueError(f"[D] Bad src: {videoSrc}; tried {srcAttempts}")
                     else:
                         print(f'[D] Bad src [{srcAttempts}], scroll down {var.SCROLL_HEIGHT} & try again ...')
                         sel.scrollDown(driver, var.SCROLL_HEIGHT)
@@ -169,7 +179,8 @@ def downloadAll(
 
             if not var.DEBUG_WITHOUT_DOWNLOAD:
                 hasDownloadError = util.download(driver=driver, url=videoSrc, name=index_shortname)
-                raise Exception("[D] Raise download error") if hasDownloadError else None
+                if hasDownloadError:
+                    raise ValueError("[D] Raise download error")
             oks += 1
             print(f"[D] Downloaded: {index_shortname}")
             hasLoggerError = util.logger(

@@ -24,7 +24,7 @@ def short_full_element_text(element): # short, full
         return shortText, fullText
     # if shortTitle:
         # return shortTitle, fullTitle
-    raise Exception(f"No text from element: {str(element)}")
+    raise ValueError(f"No text from element: {str(element)}")
 
 @dec.SuppressExceptionTrue
 def login(driver, username, password):

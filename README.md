@@ -1,6 +1,6 @@
 # pysel
 
-Dependencies
+## Dependencies:
     python3
     pip3 install selenium
     pip3 install pandas

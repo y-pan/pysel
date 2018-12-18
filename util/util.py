@@ -27,14 +27,14 @@ def default_username():
     return USERNAME
 
 @dec.SuppressExceptionEmptyStringTuple
-def proper_short_full_name(name='', maxLen=50): # shortname, fullname
-    fullname=NAME_REGEX.sub('_', name)
-    return fullname[:maxLen] + (fullname[maxLen:] and '__'), fullname
+def proper_short_full_name(name='', maxLen=var.NAME_MAX_LENGTH): # shortname, fullname
+    fullname=NAME_REGEX.sub(var.NAME_CHAR_REPLACEMENT, name)
+    return fullname[:maxLen] + (fullname[maxLen:] and var.NAME_SUFIX), fullname
 
 @dec.SuppressExceptionEmptyStringTuple
-def proper_short_full_text(text='', maxLen=500): # shortText, fullText
-    fullText = LOG_ERROR_TEXT_REGEX.sub(" ", str(text))
-    return fullText[:maxLen] + (fullText[maxLen:] and '...'), fullText
+def proper_short_full_text(text='', maxLen=var.TEXT_MAX_LENGTH): # shortText, fullText
+    fullText = LOG_ERROR_TEXT_REGEX.sub(var.TEXT_CHAR_REPLACEMENT, str(text))
+    return fullText[:maxLen] + (fullText[maxLen:] and var.TEXT_SUFIX), fullText
 
 def leftpad_zeros(num, desiredNumOfDigits=3):
     try:
@@ -46,7 +46,7 @@ def leftpad_zeros(num, desiredNumOfDigits=3):
         return snum
     except:
         t = int(time.time())  # seconds
-        return f"000000_{t}"
+        return f"{'0'*desiredNumOfDigits}_{t}"
 
 def get_args_dict(parasList):
     # -key1 value1 -key2 value2

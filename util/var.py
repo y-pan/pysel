@@ -2,7 +2,6 @@
 VERSION=1.8
 DEBUG_WITHOUT_DOWNLOAD=False
 
-XPATH_DOWNLOAD="//a[@data-clip-position and contains(@id, 'lnk')]"
 GET_SRC_TRY_MAX=7
 SCROLL_HEIGHT=30
 SHOW_MSG=True
@@ -39,6 +38,7 @@ FLAG_PASS='-P'
 FLAG_USER='-U'
 FLAG_REDO='-r'
 FLAG_HELP='-h'
+FLAG_HELPS=['-h', '-help', '--help', '--h']
 
 FLAG_START_INDEX='-s'
 FLAG_END_INDEX='-e'

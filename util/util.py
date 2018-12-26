@@ -1,5 +1,5 @@
 import sys
-import os.path
+import os, ssl
 import datetime
 import time
 import re
@@ -10,6 +10,13 @@ import util.decorators as dec
 
 LOG_ERROR_TEXT_REGEX=re.compile('[^0-9a-zA-Z:;.]')
 NAME_REGEX=re.compile('[^0-9a-zA-Z]+')
+
+def contentProvider(url):
+    from protected.config import CONTENT_PROVIDERS
+    for k,v in CONTENT_PROVIDERS.items():
+        if v in url:
+            return k
+    return ''
 
 @dec.SuppressExceptionEmptyString
 def default_pageurl():
@@ -48,13 +55,17 @@ def leftpad_zeros(num, desiredNumOfDigits=3):
         t = int(time.time())  # seconds
         return f"{'0'*desiredNumOfDigits}_{t}"
 
+def isHelp(flag):
+    _flag = str(flag).lower()
+    return _flag in var.FLAG_HELPS
+    
 def get_args_dict(parasList):
     # -key1 value1 -key2 value2
     key_value_dict = dict()
     prevKey=""
     hasHelp = False
     for p in parasList:
-        if p.lower() == var.FLAG_HELP:
+        if isHelp(p):
             hasHelp = True
         if p.startswith('-'):
             prevKey = p
@@ -95,6 +106,12 @@ def getDownloadFailed(logfile, target_column=var.HEADER_FULLNAME): # target_colu
 def download(driver, url, name):
     urllib.request.urlretrieve(url, name)
     return False
+
+@dec.SuppressExceptionTrue
+def ssl_unverified():
+    # PYTHONHTTPSVERIFY = 0 
+    if (not os.environ.get('PYTHONHTTPSVERIFY', '') and getattr(ssl, '_create_unverified_context', None)): 
+        ssl._create_default_https_context = ssl._create_unverified_context
 
 @dec.SuppressExceptionTrue
 def loggerSummary(logfile, totalCount, okCount, match_indices, skipCount, failCount, failed_indices):

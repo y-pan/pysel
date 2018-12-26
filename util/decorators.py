@@ -7,6 +7,24 @@ def SuppressExceptionVoid(func):
             pass
     return func_wrapper
 
+def SuppressExceptionReturnNone(func):
+    def func_wrapper(*args, **kwargs):  # any number of args, kwargs need to be the last continual, 
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            print(f"[SuppressExceptionReturnNone]: {e}")
+            return None
+    return func_wrapper
+
+def SuppressExceptionReturnZero(func):
+    def func_wrapper(*args, **kwargs):  # any number of args, kwargs need to be the last continual, 
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            print(f"[SuppressExceptionReturnZero]: {e}")
+            return 0
+    return func_wrapper
+
 def SuppressExceptionTrue(func):  # True then error
     def func_wrapper(*args, **kwargs):  # any number of args
         try:

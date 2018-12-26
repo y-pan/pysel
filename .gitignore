@@ -1,4 +1,6 @@
 /protected
-
+/tmp/
+/tmp*/
+*.bak.*
 __pycache__/
 *.py[cod]

@@ -11,6 +11,8 @@ import util.decorators as dec
 import util.selUtil as sel
 
 def main():
+    util.ssl_unverified()  # in case of ssl certificate error
+
     argDic, needHelp = util.get_args_dict(sys.argv)
     needHelp and util.printHelp()
 
@@ -20,10 +22,13 @@ def main():
     username = argDic.get(var.FLAG_USER, util.default_username())
     start_index = int(argDic.get(var.FLAG_START_INDEX, 0))
 
+    content_provider = util.contentProvider(pageUrl)
+
     print(f'user: {username}, pass: {password}')
     print(f"REDO: {redoLog}")
     print(f"pageUrl: {pageUrl}")
     print(f"start_index: {start_index}")
+    print(f'content_provider: {content_provider}')
 
     logfile = f"log_{util.timestamp()}.csv"
     redoNames = util.getDownloadFailed(logfile=redoLog, target_column=var.HEADER_FULLNAME)
@@ -35,7 +40,8 @@ def main():
         pageUrl=pageUrl,
         username=username,
         password=password,
-        retry_on_errors_when_finished=var.RETRY_ON_ERRORS_AFTER_DOWNLOAD_FINISHED)
+        retry_on_errors_when_finished=var.RETRY_ON_ERRORS_AFTER_DOWNLOAD_FINISHED,
+        content_provider=content_provider)
 
 def cycle(
     logfile, 
@@ -44,29 +50,36 @@ def cycle(
     password, 
     start_index,
     match_fullnames, 
-    retry_on_errors_when_finished):
+    retry_on_errors_when_finished,
+    content_provider):
+    
     print(f"[C] VERSION-{var.VERSION} \nSTART... \n{pageUrl}")
     # init driver
     firefox_profile = webdriver.FirefoxProfile()
     firefox_profile.set_preference("media.volume_scale", "0.0")
     driver = webdriver.Firefox(firefox_profile=firefox_profile)
-
     driver.implicitly_wait(var.BROWSER_IMPLICITLY_WAIT) 
+    driver.maximize_window()
 
-    driver.get(pageUrl)
-    sel.login(driver=driver, username=username, password=password)
+    isError = sel.login(driver=driver, username=username, password=password, content_provider=content_provider)
+    if isError:
+        print(f"Login failed: {pageUrl}")
+        exit
+    ## START HERE, USE download methods accordingly
     time.sleep(var.MID_SLEEP)
-    
+
+    sel.gotoDownloadPage(driver, pageUrl, content_provider)
+
     downloadAll(
         driver=driver, 
         logfile=logfile,
-        xpath=var.XPATH_DOWNLOAD, 
         desiredNumOfDigits=var.INDEX_DIGITS,
         start_index=start_index, 
         end_index=None,
         match_fullnames=None,
         exclude_fullnames=None,
-        match_indices=None)
+        match_indices=None,
+        content_provider=content_provider)
 
     # always try again
     print(f"[C] Download 1st try finshied!")
@@ -83,14 +96,14 @@ def cycle(
 
             downloadAll(
                 driver=driver, 
-                xpath=var.XPATH_DOWNLOAD, 
                 desiredNumOfDigits=var.INDEX_DIGITS,
                 logfile=logfile,
                 match_fullnames=failedFullNames,
                 match_indices=None, 
                 start_index=None, 
                 end_index=None, 
-                exclude_fullnames=None)
+                exclude_fullnames=None,
+                content_provider=content_provider)
 
     var.CLOSE_BROWSER_ON_FINISHED and driver.quit()    # .close()
         
@@ -99,16 +112,17 @@ def cycle(
 
 def downloadAll(
     driver, 
-    xpath, 
     match_fullnames,
     match_indices,
     exclude_fullnames, 
     start_index,        # include
     end_index,          # include
     desiredNumOfDigits, 
-    logfile):
+    logfile,
+    content_provider):
 
-    total = len(driver.find_elements_by_xpath(xpath))
+    total = sel.getTotal(driver, content_provider)
+
     failed_indices = []
     failed = 0
     oks = 0
@@ -140,9 +154,10 @@ def downloadAll(
                     continue
 
             time.sleep(var.SHORT_SLEEP)
-            item=driver.find_elements_by_xpath(var.XPATH_DOWNLOAD)[i]
+            item = sel.getVedioTriggerItem(driver, content_provider, i)
 
-            shortname, fullname = sel.short_full_element_text(element=item)
+            shortname, fullname = sel.short_full_element_text(element=item, content_provider=content_provider)
+
             var.SHOW_MSG and print(f"[D] shortname fullname: {shortname}, {fullname}")
 
             if exclude_fullnames and fullname in exclude_fullnames:
@@ -155,19 +170,20 @@ def downloadAll(
                 continue
 
             srcAttempts = 0
-            sel.scrollDown(driver, var.SCROLL_HEIGHT)
+            sel.scrollDown(driver, var.SCROLL_HEIGHT, content_provider)
+
             while True:
                 srcAttempts += 1
-                item=driver.find_elements_by_xpath(var.XPATH_DOWNLOAD)[i]
+                item = sel.getVedioTriggerItem(driver, content_provider, i)
                 item.click()
                 time.sleep(var.SHORT_SLEEP)
-                videoSrc = sel.getVideoSrc(driver=driver)
+                videoSrc = sel.getVideoSrc(driver, content_provider)
                 if not videoSrc or videoSrc == "" or videoSrc in srcSet:
                     if srcAttempts > var.GET_SRC_TRY_MAX:
                         raise ValueError(f"[D] Bad src: {videoSrc}; tried {srcAttempts}")
                     else:
                         print(f'[D] Bad src [{srcAttempts}], scroll down {var.SCROLL_HEIGHT} & try again ...')
-                        sel.scrollDown(driver, var.SCROLL_HEIGHT)
+                        sel.scrollDown(driver, var.SCROLL_HEIGHT, content_provider)
                 else:
                     # now src is valid
                     srcSet.add(videoSrc)

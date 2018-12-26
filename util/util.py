@@ -83,6 +83,16 @@ def printHelp():
     print('---------------------------')
     exit()
 
+def noQuotations(text):
+    return str(text).replace('"','').replace("'",'')
+
+def camalCase(text):
+    ws = str(text).split(' ')
+    cws = list()
+    for w in ws:
+        cws.append(w[0].upper() + w[1:])
+    return ''.join(cws)
+    
 def timestamp():
     now = datetime.datetime.now()
     month = leftpad_zeros(num=now.month, desiredNumOfDigits=2)

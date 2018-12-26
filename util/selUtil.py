@@ -34,11 +34,11 @@ def short_full_element_text(element, content_provider): # short, full
         return short_full_element_text_L(element)
 
 def short_full_element_text_S(element): # short, full
-    oText = element.get_attribute('innerHTML') #title
+    oText = util.camalCase(element.get_attribute('innerHTML')) #title
     return util.proper_short_full_name(name=oText, maxLen=var.NAME_MAX_LENGTH)
     
 def short_full_element_text_L(element): # short, full
-    oText = element.text
+    oText = util.camalCase(element.text)
     return util.proper_short_full_name(name=oText, maxLen=var.NAME_MAX_LENGTH)
     
 def login(driver, username, password, content_provider): # False for no error

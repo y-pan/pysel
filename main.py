@@ -17,7 +17,8 @@ def main():
     needHelp and util.printHelp()
 
     redoLog = argDic.get(var.FLAG_REDO, None)
-    pageUrl = argDic.get(var.FLAG_URL, util.default_pageurl())
+    pageUrl = util.noQuotations(argDic.get(var.FLAG_URL, util.default_pageurl()))
+    
     password = argDic.get(var.FLAG_PASS, util.default_password())
     username = argDic.get(var.FLAG_USER, util.default_username())
     start_index = int(argDic.get(var.FLAG_START_INDEX, 0))

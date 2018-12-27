@@ -1,4 +1,4 @@
-def SuppressExceptionVoid(func):
+def SuppressExceptionReturnVoid(func):
     def func_wrapper(*args, **kwargs):  # any number of args, kwargs need to be the last continual, 
         try:
             return func(*args, **kwargs)
@@ -25,7 +25,7 @@ def SuppressExceptionReturnZero(func):
             return 0
     return func_wrapper
 
-def SuppressExceptionTrue(func):  # True then error
+def SuppressExceptionReturnTrue(func):  # True then error
     def func_wrapper(*args, **kwargs):  # any number of args
         try:
             return func(*args, **kwargs)
@@ -34,7 +34,7 @@ def SuppressExceptionTrue(func):  # True then error
             return True
     return func_wrapper
 
-def SuppressExceptionEmptyString(func):
+def SuppressExceptionReturnEmptyString(func):
     def func_wrapper(*args, **kwargs):  # any number of args
         try:
             return func(*args, **kwargs)
@@ -43,7 +43,7 @@ def SuppressExceptionEmptyString(func):
             return ''
     return func_wrapper
 
-def SuppressExceptionEmptyStringTuple(func):
+def SuppressExceptionReturnEmptyStringTuple(func):
     def func_wrapper(*args, **kwargs):  # any number of args
         try:
             return func(*args, **kwargs)

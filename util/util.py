@@ -18,32 +18,32 @@ def contentProvider(url):
             return k
     return ''
 
-@dec.SuppressExceptionEmptyString
+@dec.SuppressExceptionReturnEmptyString
 def default_pageurl():
     from protected.config import PAGEURL
     return PAGEURL
 
-@dec.SuppressExceptionEmptyString
+@dec.SuppressExceptionReturnEmptyString
 def default_password():
     from protected.cred import PASSWORD
     return PASSWORD
 
-@dec.SuppressExceptionEmptyString
+@dec.SuppressExceptionReturnEmptyString
 def default_entryweb():
     from protected.config import ENTRYWEB
     return ENTRYWEB
 
-@dec.SuppressExceptionEmptyString
+@dec.SuppressExceptionReturnEmptyString
 def default_username():
     from protected.cred import USERNAME
     return USERNAME
 
-@dec.SuppressExceptionEmptyStringTuple
+@dec.SuppressExceptionReturnEmptyStringTuple
 def proper_short_full_name(name='', maxLen=var.NAME_MAX_LENGTH): # shortname, fullname
     fullname=NAME_REGEX.sub(var.NAME_CHAR_REPLACEMENT, name)
     return fullname[:maxLen] + (fullname[maxLen:] and var.NAME_SUFIX), fullname
 
-@dec.SuppressExceptionEmptyStringTuple
+@dec.SuppressExceptionReturnEmptyStringTuple
 def proper_short_full_text(text='', maxLen=var.TEXT_MAX_LENGTH): # shortText, fullText
     fullText = LOG_ERROR_TEXT_REGEX.sub(var.TEXT_CHAR_REPLACEMENT, str(text))
     return fullText[:maxLen] + (fullText[maxLen:] and var.TEXT_SUFIX), fullText
@@ -121,18 +121,18 @@ def getDownloadFailed(logfile, target_column=var.HEADER_FULLNAME): # target_colu
     print(f'From log, failed: {len(fullnamesOfFailed)}')
     return fullnamesOfFailed
 
-@dec.SuppressExceptionTrue
+@dec.SuppressExceptionReturnTrue
 def download(driver, url, name):
     urllib.request.urlretrieve(url, name)
     return False
 
-@dec.SuppressExceptionTrue
+@dec.SuppressExceptionReturnTrue
 def ssl_unverified():
     # PYTHONHTTPSVERIFY = 0 
     if (not os.environ.get('PYTHONHTTPSVERIFY', '') and getattr(ssl, '_create_unverified_context', None)): 
         ssl._create_default_https_context = ssl._create_unverified_context
 
-@dec.SuppressExceptionTrue
+@dec.SuppressExceptionReturnTrue
 def loggerSummary(logfile, totalCount, okCount, match_indices, skipCount, failCount, failed_indices):
     failed_indices_str = str(failed_indices).replace(',', ';')
     match_indices_str = str(match_indices).replace(',', ';')
@@ -140,7 +140,7 @@ def loggerSummary(logfile, totalCount, okCount, match_indices, skipCount, failCo
         log.write(f'{var.SUMMARY_MARK}\nTotalCount: {totalCount}\nOKCount: {okCount}\nSkipCount: {skipCount}\nFailCount: {failCount}\nMatch_indices(only matched get downloaded): {match_indices_str}\nFailedIndices: {failed_indices_str}')
     return False
 
-@dec.SuppressExceptionTrue
+@dec.SuppressExceptionReturnTrue
 def logger(logfile, index=0, status=var.STATUS_OK, index_shortname=var.LOGGER_EMPTY_PLACEHOLDER, fullname=var.LOGGER_EMPTY_PLACEHOLDER, src=var.LOGGER_EMPTY_PLACEHOLDER, error=var.LOGGER_EMPTY_PLACEHOLDER):
     if not index_shortname: 
         index_shortname = var.LOGGER_EMPTY_PLACEHOLDER

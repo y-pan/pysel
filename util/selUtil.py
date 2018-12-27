@@ -17,15 +17,15 @@ def getItemXPath(content_provider):
     elif content_provider == 'l':
         return "//div[@id='toc-content']//li[@class='toc-video-item']//a[contains(@class, 'item-name video-name')]"
     
-@dec.SuppressExceptionVoid
+@dec.SuppressExceptionReturnVoid
 def safeClick(driver, xpath):
     driver.find_element_by_xpath(xpath).click()
 
-@dec.SuppressExceptionVoid
+@dec.SuppressExceptionReturnVoid
 def safeClickIf(driver, xpath, shouldClick):
     driver.find_element_by_xpath(xpath).click()
 
-@dec.SuppressExceptionEmptyStringTuple
+@dec.SuppressExceptionReturnEmptyStringTuple
 def short_full_element_text(element, content_provider): # short, full
     if content_provider == 's':
         return short_full_element_text_S(element)
@@ -69,7 +69,7 @@ def gotoDownloadPage(driver, pageUrl, content_provider):
     else:
         pass
 
-@dec.SuppressExceptionVoid
+@dec.SuppressExceptionReturnVoid
 def scrollDown(driver, num, content_provider):
     if content_provider == 's':
         scrollDownS(driver, num)
@@ -84,7 +84,7 @@ def scrollDownS(driver, num):
     ys = driver.execute_script(f"var y0=window.pageYOffset; window.window.scrollTo(0, (window.pageYOffset + {num})); return [y0, window.pageYOffset];")
     var.SHOW_MSG and print(f"Scroll down [from, to]: {ys}")
 
-@dec.SuppressExceptionEmptyString
+@dec.SuppressExceptionReturnEmptyString
 def getVideoSrc(driver, content_provider):
     if content_provider == 's':
         return getVideoSrcS(driver)

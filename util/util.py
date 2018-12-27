@@ -29,6 +29,11 @@ def default_password():
     return PASSWORD
 
 @dec.SuppressExceptionEmptyString
+def default_entryweb():
+    from protected.config import ENTRYWEB
+    return ENTRYWEB
+
+@dec.SuppressExceptionEmptyString
 def default_username():
     from protected.cred import USERNAME
     return USERNAME
@@ -76,10 +81,11 @@ def get_args_dict(parasList):
 
 def printHelp():
     print('-------- options ----------')
-    print(f'{var.FLAG_USER}         - for username')
-    print(f'{var.FLAG_PASS}         - for password')
-    print(f'{var.FLAG_URL }         - for page url')
-    print(f'{var.FLAG_REDO}         - for redo log')
+    print('{}       - for username'.format(var.FLAG_USER))
+    print('{}       - for password'.format(var.FLAG_PASS))
+    print('{}       - for page url (listing videos)'.format(var.FLAG_URL))
+    print('{}       - for redo log'.format(var.FLAG_REDO))
+    print('{}       - for entryweb (entry to content providers)'.format(var.FLAG_ENTRYWEB))
     print('---------------------------')
     exit()
 
@@ -92,7 +98,10 @@ def camalCase(text):
     for w in ws:
         cws.append(w[0].upper() + w[1:])
     return ''.join(cws)
-    
+
+def mask(text, keepDigits=2):
+    return '*' * (len(text) - keepDigits) + text[-keepDigits:]
+
 def timestamp():
     now = datetime.datetime.now()
     month = leftpad_zeros(num=now.month, desiredNumOfDigits=2)

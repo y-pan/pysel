@@ -1,5 +1,5 @@
 #   config var, put here for now 
-VERSION=1.8
+VERSION=1.9
 DEBUG_WITHOUT_DOWNLOAD=False
 
 GET_SRC_TRY_MAX=7
@@ -40,5 +40,7 @@ FLAG_REDO='-r'
 FLAG_HELP='-h'
 FLAG_HELPS=['-h', '-help', '--help', '--h']
 
-FLAG_START_INDEX='-s'
-FLAG_END_INDEX='-e'
+FLAG_ENTRYWEB='-e' # entryweb, where content providers were presented
+
+FLAG_START_INDEX='-si'
+FLAG_END_INDEX='-ei'

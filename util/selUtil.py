@@ -5,8 +5,7 @@ import time
 
 @dec.SuppressExceptionReturnZero
 def getTotal(driver, content_provider):
-    if content_provider == 'l':
-        return len(driver.find_elements_by_xpath(getItemXPath(content_provider)))
+    return len(driver.find_elements_by_xpath(getItemXPath(content_provider)))
 
 @dec.SuppressExceptionReturnNone
 def getVedioTriggerItem(driver, content_provider, index):
@@ -41,21 +40,21 @@ def short_full_element_text_L(element): # short, full
     oText = util.camalCase(element.text)
     return util.proper_short_full_name(name=oText, maxLen=var.NAME_MAX_LENGTH)
     
-def login(driver, username, password, content_provider): # False for no error
+def login(driver, username, password, content_provider, entryweb, downloadpage): # False for no error
     if str(content_provider).lower() == 's':
-        return loginS(driver, username, password)
+        return loginS(driver, username, password, downloadpage)
     elif str(content_provider).lower() == 'l':
-        return loginL(driver, username, password)
+        return loginL(driver, username, password, entryweb)
     return True
 
-def loginS(driver, username, password): # s
+def loginS(driver, username, password, downloadpage): # s
+    driver.get(downloadpage)
     driver.find_element_by_name("user").send_keys(username)
     driver.find_element_by_name("pass").send_keys(password)
     driver.find_element_by_xpath("//input[@value='Sign in']").click()
 
-def loginL(driver, username, password): # l
-    from protected.config import ENTRYWEB
-    driver.get(ENTRYWEB)
+def loginL(driver, username, password, entryweb): # l
+    driver.get(entryweb)
     driver.find_element_by_xpath("//section[@id='find-your-way']//a[contains(text(),'eLearning')]").click()
     driver.find_element_by_xpath("//a[contains(@class, 'promo-card')][1]").click()
     driver.find_element_by_xpath("//div[@class='record-detail']//a[contains(@class, 'access-online')]").click()

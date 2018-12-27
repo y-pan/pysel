@@ -21,15 +21,18 @@ def main():
     
     password = argDic.get(var.FLAG_PASS, util.default_password())
     username = argDic.get(var.FLAG_USER, util.default_username())
+    entryweb = util.noQuotations(argDic.get(var.FLAG_ENTRYWEB, util.default_entryweb()))
+
     start_index = int(argDic.get(var.FLAG_START_INDEX, 0))
 
     content_provider = util.contentProvider(pageUrl)
 
-    print(f'user: {username}, pass: {password}')
+    print(f'user: {util.mask(username, 1)}, pass: {util.mask(password, 1)}')
     print(f"REDO: {redoLog}")
     print(f"pageUrl: {pageUrl}")
     print(f"start_index: {start_index}")
     print(f'content_provider: {content_provider}')
+    print(f'entryweb: {entryweb}')
 
     logfile = f"log_{util.timestamp()}.csv"
     redoNames = util.getDownloadFailed(logfile=redoLog, target_column=var.HEADER_FULLNAME)
@@ -42,7 +45,8 @@ def main():
         username=username,
         password=password,
         retry_on_errors_when_finished=var.RETRY_ON_ERRORS_AFTER_DOWNLOAD_FINISHED,
-        content_provider=content_provider)
+        content_provider=content_provider,
+        entryweb=entryweb)
 
 def cycle(
     logfile, 
@@ -52,7 +56,8 @@ def cycle(
     start_index,
     match_fullnames, 
     retry_on_errors_when_finished,
-    content_provider):
+    content_provider,
+    entryweb):
     
     print(f"[C] VERSION-{var.VERSION} \nSTART... \n{pageUrl}")
     # init driver
@@ -62,7 +67,7 @@ def cycle(
     driver.implicitly_wait(var.BROWSER_IMPLICITLY_WAIT) 
     driver.maximize_window()
 
-    isError = sel.login(driver=driver, username=username, password=password, content_provider=content_provider)
+    isError = sel.login(driver=driver, username=username, password=password, content_provider=content_provider, entryweb=entryweb, downloadpage=pageUrl)
     if isError:
         print(f"Login failed: {pageUrl}")
         exit
@@ -179,7 +184,7 @@ def downloadAll(
                 item.click()
                 time.sleep(var.SHORT_SLEEP)
                 videoSrc = sel.getVideoSrc(driver, content_provider)
-                if not videoSrc or videoSrc == "" or videoSrc in srcSet:
+                if not videoSrc or videoSrc in srcSet:
                     if srcAttempts > var.GET_SRC_TRY_MAX:
                         raise ValueError(f"[D] Bad src: {videoSrc}; tried {srcAttempts}")
                     else:
@@ -197,7 +202,7 @@ def downloadAll(
             if not var.DEBUG_WITHOUT_DOWNLOAD:
                 hasDownloadError = util.download(driver=driver, url=videoSrc, name=index_shortname)
                 if hasDownloadError:
-                    raise ValueError("[D] Raise download error")
+                    raise ValueError("[D] Download error")
             oks += 1
             print(f"[D] Downloaded: {index_shortname}")
             hasLoggerError = util.logger(
@@ -240,5 +245,3 @@ def downloadAll(
 
 if __name__ == "__main__":
     main()
-    # cycle()
-    # cycleBaseOnLog('../log_2018-12-13-14-01-46.csv')

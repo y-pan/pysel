@@ -60,10 +60,17 @@ def cycle(
     entryweb):
     
     print(f"[C] VERSION-{var.VERSION} \nSTART... \n{pageUrl}")
-    # init driver
-    firefox_profile = webdriver.FirefoxProfile()
-    firefox_profile.set_preference("media.volume_scale", "0.0")
-    driver = webdriver.Firefox(firefox_profile=firefox_profile)
+    
+    # use firefox
+    # firefox_profile = webdriver.FirefoxProfile()
+    # firefox_profile.set_preference("media.volume_scale", "0.0")
+    # driver = webdriver.Firefox(firefox_profile=firefox_profile)
+
+    # use chrome
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument("--mute-audio")
+    driver = webdriver.Chrome(chrome_options=chrome_options)
+
     driver.implicitly_wait(var.BROWSER_IMPLICITLY_WAIT) 
     driver.maximize_window()
 

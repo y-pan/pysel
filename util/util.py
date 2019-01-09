@@ -25,7 +25,7 @@ def default_pageurl():
 
 @dec.SuppressExceptionReturnEmptyString
 def default_password():
-    from protected.cred import PASSWORD
+    from protected.config import PASSWORD
     return PASSWORD
 
 @dec.SuppressExceptionReturnEmptyString
@@ -35,7 +35,7 @@ def default_entryweb():
 
 @dec.SuppressExceptionReturnEmptyString
 def default_username():
-    from protected.cred import USERNAME
+    from protected.config import USERNAME
     return USERNAME
 
 @dec.SuppressExceptionReturnEmptyStringTuple

@@ -86,6 +86,8 @@ def printHelp():
     print('{}       - for page url (listing videos)'.format(var.FLAG_URL))
     print('{}       - for redo log'.format(var.FLAG_REDO))
     print('{}       - for entryweb (entry to content providers)'.format(var.FLAG_ENTRYWEB))
+    print('{}       - for start index inclusive'.format(var.FLAG_START_INDEX))
+    print('{}       - for end index inclusive'.format(var.FLAG_END_INDEX))
     print('---------------------------')
     exit()
 
@@ -140,6 +142,11 @@ def loggerSummary(logfile, totalCount, okCount, match_indices, skipCount, failCo
         log.write(f'{var.SUMMARY_MARK}\nTotalCount: {totalCount}\nOKCount: {okCount}\nSkipCount: {skipCount}\nFailCount: {failCount}\nMatch_indices(only matched get downloaded): {match_indices_str}\nFailedIndices: {failed_indices_str}')
     return False
 
+def loggerAbout(aboutfile, lines):
+    with open(aboutfile, mode='a') as log:
+        log.writelines(lines+'\n')
+    return False
+
 @dec.SuppressExceptionReturnTrue
 def logger(logfile, index=0, status=var.STATUS_OK, index_shortname=var.LOGGER_EMPTY_PLACEHOLDER, fullname=var.LOGGER_EMPTY_PLACEHOLDER, src=var.LOGGER_EMPTY_PLACEHOLDER, error=var.LOGGER_EMPTY_PLACEHOLDER):
     if not index_shortname: 
@@ -163,3 +170,22 @@ def logger(logfile, index=0, status=var.STATUS_OK, index_shortname=var.LOGGER_EM
         with open(logfile, mode='a') as log:
             log.write(line)
     return False
+
+def shutdownIfFileExist(file="0.txt"):
+    if os.path.exists(file):
+        print("Shutdown...")
+        shutdown()
+
+def shutdown():
+    os.system('shutdown -s -t 0')
+    #os.system('sudo shutdown now')  #linux
+    #os.system('systemctl poweroff')  #ubuntu
+    #os.system('shutdown /p /f')
+    #import sys
+    #if sys.platform == 'win32':
+    #     import ctypes
+    #     user32 = ctypes.WinDLL('user32')
+    #     user32.ExitWindowsEx(0x00000008, 0x00000000)
+    # else:
+    #     import os
+    #     os.system('sudo shutdown now')

@@ -1,0 +1,9 @@
+
+PAGEURL = ''
+ENTRYWEB = 'https://www.torontopubliclibrary.ca/'
+CONTENT_PROVIDERS = {
+    'l': 'lynda.com', 
+    's': 'safaribooksonline-com'
+}
+USERNAME=""
+PASSWORD=""

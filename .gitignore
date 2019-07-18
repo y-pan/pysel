@@ -1,4 +1,6 @@
-/protected
+/protected/config.py
+*.ignore.*
+*.tmp*
 /tmp/
 /tmp*/
 *.bak.*

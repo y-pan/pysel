@@ -10,6 +10,8 @@ import util.var as var
 import util.decorators as dec
 import util.selUtil as sel
 
+USE_FIREFOX=False
+
 def main():
     util.ssl_unverified()  # in case of ssl certificate error
 
@@ -66,15 +68,17 @@ startIndex: {start_index}
 logfile: {logfile}
 """
     util.loggerAbout('about.log', aboutContent)
-    # use firefox
-    firefox_profile = webdriver.FirefoxProfile()
-    firefox_profile.set_preference("media.volume_scale", "0.0")
-    driver = webdriver.Firefox(firefox_profile=firefox_profile)
-
-    # use chrome
-    # chrome_options = webdriver.ChromeOptions()
-    # chrome_options.add_argument("--mute-audio")
-    # driver = webdriver.Chrome(chrome_options=chrome_options)
+    
+    if USE_FIREFOX:
+        # use firefox
+        firefox_profile = webdriver.FirefoxProfile()
+        firefox_profile.set_preference("media.volume_scale", "0.0")
+        driver = webdriver.Firefox(firefox_profile=firefox_profile)
+    else:
+        # use chrome
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument("--mute-audio")
+        driver = webdriver.Chrome(chrome_options=chrome_options)
 
     driver.implicitly_wait(var.BROWSER_IMPLICITLY_WAIT) 
     driver.maximize_window()
@@ -255,6 +259,12 @@ def downloadAll(
 
     hasLoggerSummaryError and print('[D] Logger summary error!')
 
+
 if __name__ == "__main__":
+
+    shutdownfile="0.txt"
+    print(f'To shutdown when complete, create: {shutdownfile}')
+
     main()
-    util.shutdownIfFileExist()
+    
+    util.shutdownIfFileExist(file=shutdownfile)

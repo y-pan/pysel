@@ -4,5 +4,5 @@ pip3 install pandas
 
 echo "Make sure python3 alias available"
 
-# ./gecko.sh
-# ./alias.sh
+chmod a+x ./useDriver.sh
+./useDriver.sh

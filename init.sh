@@ -4,5 +4,6 @@ pip3 install pandas
 
 echo "Make sure python3 alias available"
 
-chmod a+x ./useDriver.sh
+chmod a+x ./*.sh
 ./useDriver.sh
+./alias.sh

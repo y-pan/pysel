@@ -177,7 +177,27 @@ def shutdownIfFileExist(file="0.txt"):
         shutdown()
 
 def shutdown():
-    os.system('shutdown -s -t 0')
+    if sys.platform == "linux":
+        print("On linux system, do shutdown: ")
+        try: 
+            os.system('sudo shutdown now')  #linux
+        except Exception as el1:
+            print(el1)
+            try:
+                os.system('systemctl poweroff')  # ubuntu
+            except Exception as el2:
+                print(el2)
+
+    else: 
+        try: 
+            os.system('shutdown -s -t 0') # win
+        except Exception as e1:
+            print(e1)
+            try: 
+                os.system('shutdown /p /f')
+            except Exception as e2:
+                print(e2)
+
     #os.system('sudo shutdown now')  #linux
     #os.system('systemctl poweroff')  #ubuntu
     #os.system('shutdown /p /f')

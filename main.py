@@ -10,7 +10,7 @@ import util.var as var
 import util.decorators as dec
 import util.selUtil as sel
 
-USE_FIREFOX=True
+USE_FIREFOX=False
 
 def main():
     util.ssl_unverified()  # in case of ssl certificate error

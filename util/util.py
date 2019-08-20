@@ -180,7 +180,7 @@ def shutdown():
     if sys.platform == "linux":
         print("On linux system, do shutdown: ")
         try: 
-            os.system('sudo shutdown now')  #linux
+            os.system('shutdown now')  #linux
         except Exception as el1:
             print(el1)
             try:
@@ -198,14 +198,3 @@ def shutdown():
             except Exception as e2:
                 print(e2)
 
-    #os.system('sudo shutdown now')  #linux
-    #os.system('systemctl poweroff')  #ubuntu
-    #os.system('shutdown /p /f')
-    #import sys
-    #if sys.platform == 'win32':
-    #     import ctypes
-    #     user32 = ctypes.WinDLL('user32')
-    #     user32.ExitWindowsEx(0x00000008, 0x00000000)
-    # else:
-    #     import os
-    #     os.system('sudo shutdown now')

@@ -197,4 +197,3 @@ def shutdown():
                 os.system('shutdown /p /f')
             except Exception as e2:
                 print(e2)
-

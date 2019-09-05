@@ -11,6 +11,10 @@ import util.decorators as dec
 import util.selUtil as sel
 
 USE_FIREFOX=False
+SHUTDOWN_FILE="0.txt"
+
+def print_friendly_msg():
+    print(f'### Yo~ to shutdown when complete, create: {SHUTDOWN_FILE}')
 
 def main():
     util.ssl_unverified()  # in case of ssl certificate error
@@ -158,6 +162,9 @@ def downloadAll(
         videoSrc=''
 
         try:
+
+            print_friendly_msg()
+
             print(f"[D]>>>>#: {i} / {total}")
 
             if start_index is not None and i < start_index:
@@ -262,9 +269,6 @@ def downloadAll(
 
 if __name__ == "__main__":
 
-    shutdownfile="0.txt"
-    print(f'To shutdown when complete, create: {shutdownfile}')
-
     main()
     
-    util.shutdownIfFileExist(file=shutdownfile)
+    util.shutdownIfFileExist(file=SHUTDOWN_FILE)

@@ -10,7 +10,7 @@ import util.var as var
 import util.decorators as dec
 import util.selUtil as sel
 
-USE_FIREFOX = False
+USE_FIREFOX = True
 SHUTDOWN_FILE = "0.txt"
 
 
@@ -34,13 +34,14 @@ def main():
         var.FLAG_ENTRYWEB, util.default_entryweb()))
 
     start_index = int(argDic.get(var.FLAG_START_INDEX, 0))
-
+    end_index = int(argDic.get(var.FLAG_END_INDEX, -1))
     content_provider = util.contentProvider(pageUrl)
 
-    print(f'user: {util.mask(username, 1)}, pass: {util.mask(password, 1)}')
-    print(f"REDO: {redoLog}")
-    print(f"pageUrl: {pageUrl}")
-    print(f"start_index: {start_index}")
+    print(f'user[{var.FLAG_USER}]: {util.mask(username, 1)}, pass[{var.FLAG_PASS}]: {util.mask(password, 1)}')
+    print(f"REDO[{var.FLAG_REDO}]: {redoLog}")
+    print(f"pageUrl[{var.FLAG_URL}]: {pageUrl}")
+    print(f"start_index[{var.FLAG_START_INDEX}]: {start_index}")
+    print(f"end_index[{var.FLAG_END_INDEX}]: {end_index}")
     print(f'content_provider: {content_provider}')
     print(f'entryweb: {entryweb}')
 
@@ -51,6 +52,7 @@ def main():
     cycle(
         logfile=logfile,
         start_index=start_index,
+        end_index=end_index,
         match_fullnames=redoNames,
         pageUrl=pageUrl,
         username=username,
@@ -66,6 +68,7 @@ def cycle(
         username,
         password,
         start_index,
+        end_index,
         match_fullnames,
         retry_on_errors_when_finished,
         content_provider,
@@ -73,8 +76,11 @@ def cycle(
 
     print(f"[C] VERSION-{var.VERSION} \nSTART... \n{pageUrl}")
     aboutContent = f"""
-pageUrl: {pageUrl}
-startIndex: {start_index}
+{var.FLAG_URL}: {pageUrl}
+{var.FLAG_START_INDEX}: {start_index}
+{var.FLAG_END_INDEX}: {end_index}
+{var.FLAG_USER}: *
+{var.FLAG_PASS}: *
 logfile: {logfile}
 """
     util.loggerAbout('about.log', aboutContent)
@@ -176,11 +182,11 @@ def downloadAll(
 
             print(f"[D]>>>>#: {i} / {total}")
 
-            if start_index is not None and i < start_index:
+            if start_index is not None and start_index >= 0 and i < start_index:
                 print("[D]---skipped by start_index ---")
                 skips += 1
                 continue
-            if end_index is not None and i > end_index:
+            if end_index is not None and end_index >= 0 and i > end_index:
                 print("[D]---skipped by end_index ---")
                 skips += 1
                 continue

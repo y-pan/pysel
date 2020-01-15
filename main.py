@@ -10,11 +10,13 @@ import util.var as var
 import util.decorators as dec
 import util.selUtil as sel
 
-USE_FIREFOX=False
-SHUTDOWN_FILE="0.txt"
+USE_FIREFOX = False
+SHUTDOWN_FILE = "0.txt"
+
 
 def print_friendly_msg():
     print(f'### Yo~ to shutdown when complete, create: {SHUTDOWN_FILE}')
+
 
 def main():
     util.ssl_unverified()  # in case of ssl certificate error
@@ -23,11 +25,13 @@ def main():
     needHelp and util.printHelp()
 
     redoLog = argDic.get(var.FLAG_REDO, None)
-    pageUrl = util.noQuotations(argDic.get(var.FLAG_URL, util.default_pageurl()))
-    
+    pageUrl = util.noQuotations(argDic.get(
+        var.FLAG_URL, util.default_pageurl()))
+
     password = argDic.get(var.FLAG_PASS, util.default_password())
     username = argDic.get(var.FLAG_USER, util.default_username())
-    entryweb = util.noQuotations(argDic.get(var.FLAG_ENTRYWEB, util.default_entryweb()))
+    entryweb = util.noQuotations(argDic.get(
+        var.FLAG_ENTRYWEB, util.default_entryweb()))
 
     start_index = int(argDic.get(var.FLAG_START_INDEX, 0))
 
@@ -41,7 +45,8 @@ def main():
     print(f'entryweb: {entryweb}')
 
     logfile = f"log_{util.timestamp()}.csv"
-    redoNames = util.getDownloadFailed(logfile=redoLog, target_column=var.HEADER_FULLNAME)
+    redoNames = util.getDownloadFailed(
+        logfile=redoLog, target_column=var.HEADER_FULLNAME)
 
     cycle(
         logfile=logfile,
@@ -54,25 +59,26 @@ def main():
         content_provider=content_provider,
         entryweb=entryweb)
 
+
 def cycle(
-    logfile, 
-    pageUrl, 
-    username, 
-    password, 
-    start_index,
-    match_fullnames, 
-    retry_on_errors_when_finished,
-    content_provider,
-    entryweb):
-    
+        logfile,
+        pageUrl,
+        username,
+        password,
+        start_index,
+        match_fullnames,
+        retry_on_errors_when_finished,
+        content_provider,
+        entryweb):
+
     print(f"[C] VERSION-{var.VERSION} \nSTART... \n{pageUrl}")
-    aboutContent=f"""
+    aboutContent = f"""
 pageUrl: {pageUrl}
 startIndex: {start_index}
 logfile: {logfile}
 """
     util.loggerAbout('about.log', aboutContent)
-    
+
     if USE_FIREFOX:
         # use firefox
         firefox_profile = webdriver.FirefoxProfile()
@@ -84,23 +90,24 @@ logfile: {logfile}
         chrome_options.add_argument("--mute-audio")
         driver = webdriver.Chrome(chrome_options=chrome_options)
 
-    driver.implicitly_wait(var.BROWSER_IMPLICITLY_WAIT) 
+    driver.implicitly_wait(var.BROWSER_IMPLICITLY_WAIT)
     driver.maximize_window()
 
-    isError = sel.login(driver=driver, username=username, password=password, content_provider=content_provider, entryweb=entryweb, downloadpage=pageUrl)
+    isError = sel.login(driver=driver, username=username, password=password,
+                        content_provider=content_provider, entryweb=entryweb, downloadpage=pageUrl)
     if isError:
         print(f"Login failed: {pageUrl}")
         exit
-    ## START HERE, USE download methods accordingly
+    # START HERE, USE download methods accordingly
     time.sleep(var.MID_SLEEP)
 
     sel.gotoDownloadPage(driver, pageUrl, content_provider)
 
     downloadAll(
-        driver=driver, 
+        driver=driver,
         logfile=logfile,
         desiredNumOfDigits=var.INDEX_DIGITS,
-        start_index=start_index, 
+        start_index=start_index,
         end_index=None,
         match_fullnames=None,
         exclude_fullnames=None,
@@ -110,56 +117,58 @@ logfile: {logfile}
     # always try again
     print(f"[C] Download 1st try finshied!")
 
-    failedFullNames = util.getDownloadFailed(logfile=logfile, target_column=var.HEADER_FULLNAME)
-    
+    failedFullNames = util.getDownloadFailed(
+        logfile=logfile, target_column=var.HEADER_FULLNAME)
+
     if isinstance(failedFullNames, list):
-        failedFullNamesCount=len(failedFullNames)
+        failedFullNamesCount = len(failedFullNames)
         prevLog = logfile
         logfile = f'{prevLog.replace(".csv", "")}-{util.timestamp()}.csv'
 
         if failedFullNamesCount > 0:
-            print(f"[C] Download again for {failedFullNamesCount} failedFullNames...")
+            print(
+                f"[C] Download again for {failedFullNamesCount} failedFullNames...")
 
             downloadAll(
-                driver=driver, 
+                driver=driver,
                 desiredNumOfDigits=var.INDEX_DIGITS,
                 logfile=logfile,
                 match_fullnames=failedFullNames,
-                match_indices=None, 
-                start_index=None, 
-                end_index=None, 
+                match_indices=None,
+                start_index=None,
+                end_index=None,
                 exclude_fullnames=None,
                 content_provider=content_provider)
 
     var.CLOSE_BROWSER_ON_FINISHED and driver.quit()    # .close()
-        
 
     print(f"[C] VERSION-{var.VERSION} ALL DONE!")
 
+
 def downloadAll(
-    driver, 
-    match_fullnames,
-    match_indices,
-    exclude_fullnames, 
-    start_index,        # include
-    end_index,          # include
-    desiredNumOfDigits, 
-    logfile,
-    content_provider):
+        driver,
+        match_fullnames,
+        match_indices,
+        exclude_fullnames,
+        start_index,        # include
+        end_index,          # include
+        desiredNumOfDigits,
+        logfile,
+        content_provider):
 
     total = sel.getTotal(driver, content_provider)
 
     failed_indices = []
     failed = 0
     oks = 0
-    skips=0
-    srcSet = set() # save src to it, and use it to determine if src duplicated (sometimes it happens due to network speed, and ...)
-    
+    skips = 0
+    srcSet = set()  # save src to it, and use it to determine if src duplicated (sometimes it happens due to network speed, and ...)
+
     print(f"[D]Total: {total}")
     for i in range(total):
-        index_shortname=''
-        fullname=''
-        videoSrc=''
+        index_shortname = ''
+        fullname = ''
+        videoSrc = ''
 
         try:
 
@@ -185,9 +194,11 @@ def downloadAll(
             time.sleep(var.SHORT_SLEEP)
             item = sel.getVedioTriggerItem(driver, content_provider, i)
 
-            shortname, fullname = sel.short_full_element_text(element=item, content_provider=content_provider)
+            shortname, fullname = sel.short_full_element_text(
+                element=item, content_provider=content_provider)
 
-            var.SHOW_MSG and print(f"[D] shortname fullname: {shortname}, {fullname}")
+            var.SHOW_MSG and print(
+                f"[D] shortname fullname: {shortname}, {fullname}")
 
             if exclude_fullnames and fullname in exclude_fullnames:
                 print("[D]---skipped by exclude_fullnames ---")
@@ -209,32 +220,38 @@ def downloadAll(
                 videoSrc = sel.getVideoSrc(driver, content_provider)
                 if not videoSrc or videoSrc in srcSet:
                     if srcAttempts > var.GET_SRC_TRY_MAX:
-                        raise ValueError(f"[D] Bad src: {videoSrc}; tried {srcAttempts}")
+                        raise ValueError(
+                            f"[D] Bad src: {videoSrc}; tried {srcAttempts}")
                     else:
-                        print(f'[D] Bad src [{srcAttempts}], scroll down {var.SCROLL_HEIGHT} & try again ...')
-                        sel.scrollDown(driver, var.SCROLL_HEIGHT, content_provider)
+                        print(
+                            f'[D] Bad src [{srcAttempts}], scroll down {var.SCROLL_HEIGHT} & try again ...')
+                        sel.scrollDown(
+                            driver, var.SCROLL_HEIGHT, content_provider)
                 else:
                     # now src is valid
                     srcSet.add(videoSrc)
                     break
 
-            index_padded=util.leftpad_zeros(num=i, desiredNumOfDigits=desiredNumOfDigits)
-            index_shortname="{}_{}.mp4".format(index_padded, shortname)  # like 001_name, 010_name, 101_name
+            index_padded = util.leftpad_zeros(
+                num=i, desiredNumOfDigits=desiredNumOfDigits)
+            # like 001_name, 010_name, 101_name
+            index_shortname = "{}_{}.mp4".format(index_padded, shortname)
             var.SHOW_MSG and print(f"[D] index_shortname: {index_shortname}")
 
             if not var.DEBUG_WITHOUT_DOWNLOAD:
-                hasDownloadError = util.download(driver=driver, url=videoSrc, name=index_shortname)
+                hasDownloadError = util.download(
+                    driver=driver, url=videoSrc, name=index_shortname)
                 if hasDownloadError:
                     raise ValueError("[D] Download error")
             oks += 1
             print(f"[D] Downloaded: {index_shortname}")
             hasLoggerError = util.logger(
-                logfile=logfile, 
-                index=i, 
-                status=var.STATUS_OK, 
-                index_shortname=index_shortname, 
+                logfile=logfile,
+                index=i,
+                status=var.STATUS_OK,
+                index_shortname=index_shortname,
                 fullname=fullname,
-                src=videoSrc, 
+                src=videoSrc,
                 error='')
             hasLoggerError and print(f"[D] Logger error at index: {i}")
             time.sleep(var.SHORT_SLEEP)
@@ -242,23 +259,24 @@ def downloadAll(
             failed += 1
             failed_indices.append(i)
             print(f"[D] Fail #{i} Cause:{e}")
-            shortError, fullError = util.proper_short_full_text(str(e), maxLen=var.TEXT_MAX_LENGTH)
+            shortError, fullError = util.proper_short_full_text(
+                str(e), maxLen=var.TEXT_MAX_LENGTH)
             util.logger(
                 logfile=logfile,
-                index=i, 
-                status=var.STATUS_ERROR, 
-                index_shortname=index_shortname, 
+                index=i,
+                status=var.STATUS_ERROR,
+                index_shortname=index_shortname,
                 fullname=fullname,
-                src=videoSrc, 
+                src=videoSrc,
                 error=shortError)
-    
+
     summary = f'DONE - Total: {total}; \nOks: {oks}; \nmatch_indices: {match_indices}; \nskippedCount: {skips}; \nFailedCount: {failed}; \nFailedIndices: {failed_indices}'
     print(summary)
 
     hasLoggerSummaryError = util.loggerSummary(
         logfile=logfile,
-        totalCount=total, 
-        okCount=oks, 
+        totalCount=total,
+        okCount=oks,
         match_indices=match_indices,
         skipCount=skips,
         failCount=failed,
@@ -270,5 +288,5 @@ def downloadAll(
 if __name__ == "__main__":
 
     main()
-    
+
     util.shutdownIfFileExist(file=SHUTDOWN_FILE)

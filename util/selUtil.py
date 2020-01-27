@@ -117,14 +117,21 @@ def getVideoSrc(driver, content_provider):
 
 
 def getVideoSrcS(driver):
-    driver.switch_to.frame(driver.find_element_by_tag_name("iframe"))
-    time.sleep(var.SHORT_SLEEP)
-    video = driver.find_element_by_xpath("//div[@class='videoDisplay']/video")
+    video = driver.find_element_by_xpath(
+        "//video[@class='persistentNativePlayer nativeEmbedPlayerPid']")
     src = video.get_attribute("src")
-    driver.switch_to.default_content()
-    time.sleep(var.SHORT_SLEEP)
     var.SHOW_MSG and print(f"src: {src}")
     return src
+
+# def getVideoSrcS(driver):
+#     driver.switch_to.frame(driver.find_element_by_tag_name("iframe"))
+#     time.sleep(var.SHORT_SLEEP)
+#     video = driver.find_element_by_xpath("//div[@class='videoDisplay']/video")
+#     src = video.get_attribute("src")
+#     driver.switch_to.default_content()
+#     time.sleep(var.SHORT_SLEEP)
+#     var.SHOW_MSG and print(f"src: {src}")
+#     return src
 
 
 def getVideoSrcL(driver):

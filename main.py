@@ -10,7 +10,7 @@ import util.var as var
 import util.decorators as dec
 import util.selUtil as sel
 
-USE_FIREFOX = True
+USE_FIREFOX = False
 SHUTDOWN_FILE = "0.txt"
 
 
@@ -225,6 +225,7 @@ def downloadAll(
                 time.sleep(var.SHORT_SLEEP)
                 videoSrc = sel.getVideoSrc(driver, content_provider)
                 if not videoSrc or videoSrc in srcSet:
+
                     if srcAttempts > var.GET_SRC_TRY_MAX:
                         raise ValueError(
                             f"[D] Bad src: {videoSrc}; tried {srcAttempts}")

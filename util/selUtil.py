@@ -116,14 +116,30 @@ def getVideoSrc(driver, content_provider):
         return getVideoSrcL(driver)
 
 
-def getVideoSrcS(driver):
+def getVideoSrcS_2(driver):
     video = driver.find_element_by_xpath(
-        "//video[@class='persistentNativePlayer nativeEmbedPlayerPid']")
+        "//video[contains(@class,'persistentNativePlayer')]")
+    print("video element: ", video)
     src = video.get_attribute("src")
     var.SHOW_MSG and print(f"src: {src}")
     return src
 
-# def getVideoSrcS(driver):
+
+def getVideoSrcS(driver):
+    driver.switch_to.frame(driver.find_element_by_tag_name("iframe"))
+    time.sleep(var.SHORT_SLEEP)
+
+    video = driver.find_element_by_xpath(
+        "//video[contains(@class,'persistentNativePlayer')]")
+    print("video element: ", video)
+    src = video.get_attribute("src")
+
+    driver.switch_to.default_content()
+    time.sleep(var.SHORT_SLEEP)
+    var.SHOW_MSG and print(f"src: {src}")
+    return src
+
+# def getVideoSrcS_1(driver):
 #     driver.switch_to.frame(driver.find_element_by_tag_name("iframe"))
 #     time.sleep(var.SHORT_SLEEP)
 #     video = driver.find_element_by_xpath("//div[@class='videoDisplay']/video")
@@ -137,6 +153,7 @@ def getVideoSrcS(driver):
 def getVideoSrcL(driver):
     vedio = driver.find_element_by_xpath(
         "//div[@id='courseplayer']//video[@class='player']")
+    print("video element: ", video)
     src = vedio.get_attribute('src')
     var.SHOW_MSG and print(f"src: {src}")
     return src

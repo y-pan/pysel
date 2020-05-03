@@ -151,9 +151,9 @@ def getVideoSrcS(driver):
 
 
 def getVideoSrcL(driver):
-    vedio = driver.find_element_by_xpath(
+    video = driver.find_element_by_xpath(
         "//div[@id='courseplayer']//video[@class='player']")
     print("video element: ", video)
-    src = vedio.get_attribute('src')
+    src = video.get_attribute('src')
     var.SHOW_MSG and print(f"src: {src}")
     return src

@@ -62,8 +62,13 @@ def loginS(driver, username, password, downloadpage):  # s
     driver.find_element_by_name("user").send_keys(username)
     driver.find_element_by_name("pass").send_keys(password)
     # driver.find_element_by_xpath("//input[@value='Sign in']").click()
-    driver.find_element_by_xpath(
-        '//button[contains(text(), "Sign in")]').click()
+    # driver.find_element_by_xpath(
+    #     '//button[contains(text(), "Sign in")]').click()
+    try:
+        driver.find_element_by_xpath("//button[contains(text(), 'Sign in')]").click()
+    except Exception as e:
+        print("can't find sign in button, trying the input...")
+        driver.find_element_by_xpath("//input[@value='Sign in']").click()
 
 
 def loginL(driver, username, password, entryweb):  # l

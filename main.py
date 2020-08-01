@@ -10,7 +10,7 @@ import util.var as var
 import util.decorators as dec
 import util.selUtil as sel
 
-USE_FIREFOX = False
+USE_FIREFOX = True
 SHUTDOWN_FILE = "0.txt"
 
 

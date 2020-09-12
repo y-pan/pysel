@@ -11,7 +11,7 @@ pip3 install pandas
 
 # setup credentials in ./protected/config.py
 
-# Activate env then run program
+# Activate env then run program, and videos will be downloaded in your current directory
 source _path_to_pysel_dir_/env/bin/activate
 python3 _path_to_pysel_dir_/main.py -h
 python3 _path_to_pysel_dir_/main.py -u "https://proquestpubliclibrary-......" -U "0000000000000" -P "111111" 

@@ -17,5 +17,5 @@ python3 _path_to_pysel_dir_/main.py -h
 python3 _path_to_pysel_dir_/main.py -u "https://proquestpubliclibrary-......" -U "0000000000000" -P "111111" 
 
 
-# For mac, you may not be blocked executing chromedriver or geckodriver, by system security. 
+# For mac, you may be blocked executing chromedriver or geckodriver, by system security. 
 # Workaround is drag them into Applications, then drag them back to your desinated directory again

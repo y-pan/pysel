@@ -10,12 +10,16 @@ import util.var as var
 import util.decorators as dec
 import util.selUtil as sel
 
-USE_FIREFOX = True
-SHUTDOWN_FILE = "0.txt"
+USE_FIREFOX = False
+# Leave DRIVER_DIR empty if you have chromedriver/geckodriver globally accessable in system
+DRIVER_DIR = "/Users/yunpan/Documents/pysel/drivers/"
+
+DRIVER_PATH = None if not DRIVER_DIR else (
+    (DRIVER_DIR + var.GECKODRIVER) if USE_FIREFOX else (DRIVER_DIR + var.CHROMEDRIVER))
 
 
 def print_friendly_msg():
-    print(f'### Yo~ to shutdown when complete, create: {SHUTDOWN_FILE}')
+    print(f'### Yo~ to shutdown when complete, create: {var.SHUTDOWN_FILE}')
 
 
 def main():
@@ -89,12 +93,14 @@ logfile: {logfile}
         # use firefox
         firefox_profile = webdriver.FirefoxProfile()
         firefox_profile.set_preference("media.volume_scale", "0.0")
-        driver = webdriver.Firefox(firefox_profile=firefox_profile)
+        driver = webdriver.Firefox(firefox_profile=firefox_profile) if not DRIVER_PATH else webdriver.Firefox(
+            firefox_profile=firefox_profile, executable_path=DRIVER_PATH)
     else:
         # use chrome
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument("--mute-audio")
-        driver = webdriver.Chrome(chrome_options=chrome_options)
+        driver = webdriver.Chrome(chrome_options=chrome_options) if not DRIVER_PATH else webdriver.Chrome(
+            chrome_options=chrome_options, executable_path=DRIVER_PATH)
 
     driver.implicitly_wait(var.BROWSER_IMPLICITLY_WAIT)
     driver.maximize_window()
@@ -296,4 +302,4 @@ if __name__ == "__main__":
 
     main()
 
-    util.shutdownIfFileExist(file=SHUTDOWN_FILE)
+    util.shutdownIfFileExist(file=var.SHUTDOWN_FILE)

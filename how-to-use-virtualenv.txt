@@ -1,0 +1,21 @@
+####### Using virtualenv ########
+pip3 install virtualenv
+
+# Go to your project root directory, then:
+virtualenv env
+source env/bin/activate
+
+# Now you can pip3 install everything within folder of env/lib
+pip3 install selenium
+pip3 install pandas
+
+# setup credentials in ./protected/config.py
+
+# Activate env then run program
+source _path_to_pysel/env/bin/activate
+python3 main.py -h
+python3 main.py -u "https://proquestpubliclibrary-......" -U "0000000000000" -P "111111" 
+
+
+# For mac, you may not be blocked executing chromedriver or geckodriver, by system security. 
+# Workaround is drag them into Applications, then drag them back to your desinated directory again

@@ -47,3 +47,11 @@ FLAG_ENTRYWEB = '-e'  # entryweb, where content providers were presented
 
 FLAG_START_INDEX = '-si'
 FLAG_END_INDEX = '-ei'
+
+# supported drivers
+CHROMEDRIVER = "chromedriver"
+GECKODRIVER = "geckodriver"
+
+
+# A file as a signal, for program to attempt shutdown computer, when current download completed
+SHUTDOWN_FILE = "0.txt"
